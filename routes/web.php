@@ -50,10 +50,7 @@ Route::middleware(['auth'])
         Route::resource('contacthero', ContactHeroController::class);
         Route::resource('community', CommunitySectionController::class);
         Route::resource('team-members', TeamMemberController::class);
-        Route::resource('orders', PlaceOrderItemController::class)->only(['index', 'store', 'update', 'destroy']);
-        Route::resource('order-steps', PlaceOrderItemController::class)->parameters(['order-steps' => 'order_step']);
-        Route::resource('important-infos', PlaceOrderItemController::class)->parameters(['important-infos' => 'important_info']);
-        Route::resource('place-order', PlaceOrderItemController::class);
+
         Route::resource('hero-sliders', HeroSliderController::class);
         Route::resource('factory', FactoryController::class);
         Route::resource('sustainability', SustainabilityController::class);

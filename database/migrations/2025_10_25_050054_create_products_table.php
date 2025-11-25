@@ -15,6 +15,9 @@ return new class extends Migration {
             $table->string('product_code')->nullable();
             $table->string('moq')->nullable();
             $table->string('fob')->nullable();
+            $table->decimal('price', 10, 2)->nullable();
+            $table->decimal('discounted_price', 10, 2)->nullable();
+            $table->text('extra_description')->nullable();
             $table->timestamps();
         });
     }

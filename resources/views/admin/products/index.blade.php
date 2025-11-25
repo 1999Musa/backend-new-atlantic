@@ -63,10 +63,15 @@
                 </p>
 
                 <!-- Product Info -->
-                <div class="text-sm text-gray-700 space-y-1 mb-4 flex-1">
+                <div class="text-sm text-gray-700 space-y-1 mb-2 flex-1">
                     <p><span class="font-semibold text-gray-900">Product Code:</span> {{ $product->product_code ?? '—' }}</p>
                     <p><span class="font-semibold text-gray-900">MOQ:</span> {{ $product->moq ?? '—' }}</p>
                     <p><span class="font-semibold text-gray-900">FOB:</span> {{ $product->fob ?? '—' }}</p>
+                    <p><span class="font-semibold text-gray-900">Price:</span> ${{ number_format($product->price ?? 0, 2) }}</p>
+                    <p><span class="font-semibold text-gray-900">Discounted Price:</span> ${{ number_format($product->discounted_price ?? 0, 2) }}</p>
+                    @if($product->extra_description)
+                        <p><span class="font-semibold text-gray-900">Extra Description:</span> {{ $product->extra_description }}</p>
+                    @endif
                 </div>
 
                 <!-- Actions Section -->

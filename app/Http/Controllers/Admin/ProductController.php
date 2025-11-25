@@ -28,13 +28,17 @@ class ProductController extends Controller
     {
         $data = $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string',
+            'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'product_code' => 'nullable|string',
-            'moq' => 'nullable|string',
-            'fob' => 'nullable|string',
+            'product_code' => 'nullable|string|max:255',
+            'moq' => 'nullable|string|max:255',
+            'fob' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric',
+            'discounted_price' => 'nullable|numeric',
+            'extra_description' => 'nullable|string',
             'images.*' => 'nullable|image|max:5120',
         ]);
+
 
         $product = Product::create($data);
 
@@ -68,8 +72,12 @@ class ProductController extends Controller
             'product_code' => 'nullable|string|max:255',
             'moq' => 'nullable|string|max:255',
             'fob' => 'nullable|string|max:255',
+            'price' => 'nullable|numeric',
+            'discounted_price' => 'nullable|numeric',
+            'extra_description' => 'nullable|string',
             'images.*' => 'nullable|image|max:5120',
         ]);
+
 
         // Update basic product info first
         $product->update($data);
