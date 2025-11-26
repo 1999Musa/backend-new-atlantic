@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\UserLoginController;
 use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Admin\ProductController;
 
 
 
@@ -45,9 +46,13 @@ Route::get('/users', [UserLoginController::class, 'index']);
 Route::post('/contact', [ContactController::class, 'sendMail']);
 
 
+Route::apiResource('products', ProductController::class);
+
+
 Route::get('/categories', [CategoryController::class, 'index']);
 
-// API routes (React will use this)
+
+
 Route::get('/team-members', [TeamMemberController::class, 'apiIndex']);
 
 
@@ -61,14 +66,8 @@ Route::get('/community', [CommunitySectionController::class, 'apiIndex']);
 Route::get('/clients', [ClientController::class, 'apiIndex']);
 
 
-Route::get('/place-order', [PlaceOrderItemController::class, 'apiIndex']);
-
-
 
 Route::get('/chooseimg', [ChooseHeroController::class, 'apiIndex']);
-
-
-// Route::get('/product-categories', [ProductCategoryController::class, 'apiIndex']);
 
 
 

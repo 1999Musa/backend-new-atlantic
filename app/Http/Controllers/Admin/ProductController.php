@@ -10,11 +10,13 @@ use App\Models\ProductImage;
 
 class ProductController extends Controller
 {
-
     public function index()
     {
-        // eager load category
-        $products = Product::with('category')->latest()->paginate(12);
+        // eager load category + images for thumbnails
+        $products = Product::with(['category', 'images'])
+            ->latest()
+            ->paginate(12);
+
         return view('admin.products.index', compact('products'));
     }
 
@@ -26,94 +28,172 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'extra_description' => 'nullable|string',
             'product_code' => 'nullable|string|max:255',
             'moq' => 'nullable|string|max:255',
             'fob' => 'nullable|string|max:255',
             'price' => 'nullable|numeric',
             'discounted_price' => 'nullable|numeric',
-            'extra_description' => 'nullable|string',
-            'images.*' => 'nullable|image|max:5120',
+            'images.*' => 'image|max:5120',
+            'extra_images.*' => 'image|max:5120',
         ]);
 
+        $product = Product::create($validated);
 
-        $product = Product::create($data);
-
+        // Save main images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $img) {
                 $path = $img->store('products', 'public');
-                ProductImage::create([
-                    'product_id' => $product->id,
+                $product->images()->create([
                     'path' => $path,
                     'sort_order' => $index,
                 ]);
             }
         }
 
-        return redirect()->route('admin.products.index')->with('success', 'Product created.');
+        // Save extra/custom images
+        if ($request->hasFile('extra_images')) {
+            foreach ($request->file('extra_images') as $index => $img) {
+                $path = $img->store('products', 'public');
+                $product->extraImages()->create([
+                    'path' => $path,
+                    'sort_order' => $index,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
     }
+
 
     public function edit(Product $product)
     {
         $categories = Category::orderBy('title')->get();
-        $product->load('images');
+
+        // Load images, customize images, swatches etc.
+        $product->load([
+            'images',
+            'extraImages',
+        ]);
+
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
+
     public function update(Request $request, Product $product)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
+            'extra_description' => 'nullable|string',
             'product_code' => 'nullable|string|max:255',
             'moq' => 'nullable|string|max:255',
             'fob' => 'nullable|string|max:255',
             'price' => 'nullable|numeric',
             'discounted_price' => 'nullable|numeric',
-            'extra_description' => 'nullable|string',
-            'images.*' => 'nullable|image|max:5120',
+            'images.*' => 'image|max:5120',
+            'extra_images.*' => 'image|max:5120',
         ]);
 
+        $product->update($validated);
 
-        // Update basic product info first
-        $product->update($data);
 
-        // If new images are uploaded → delete all old and replace
-        if ($request->hasFile('images')) {
-            // 1️⃣ Delete all old image files & DB records
-            foreach ($product->images as $oldImage) {
-                \Storage::disk('public')->delete($oldImage->path);
-                $oldImage->delete();
+        // DELETE REMOVED MAIN IMAGES
+        if ($request->filled('remove_main')) {
+            $ids = explode(',', $request->remove_main);
+            $images = $product->images()->whereIn('id', $ids)->get();
+            foreach ($images as $img) {
+                \Storage::disk('public')->delete($img->path);
+                $img->delete();
             }
+        }
 
-            // 2️⃣ Upload and save new images
+
+        // DELETE REMOVED EXTRA IMAGES
+        if ($request->filled('remove_extra')) {
+            $ids = explode(',', $request->remove_extra);
+            $images = $product->extraImages()->whereIn('id', $ids)->get();
+            foreach ($images as $img) {
+                \Storage::disk('public')->delete($img->path);
+                $img->delete();
+            }
+        }
+        // -------------------------------
+        // SAVE NEW MAIN IMAGES
+        // -------------------------------
+        if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $img) {
                 $path = $img->store('products', 'public');
-                \App\Models\ProductImage::create([
-                    'product_id' => $product->id,
+                $product->images()->create([
                     'path' => $path,
                     'sort_order' => $index,
                 ]);
             }
         }
 
-        return redirect()
-            ->route('admin.products.index')
-            ->with('success', 'Product updated successfully.');
+        // -------------------------------
+        // SAVE NEW EXTRA IMAGES
+        // -------------------------------
+        if ($request->hasFile('extra_images')) {
+            foreach ($request->file('extra_images') as $index => $img) {
+                $path = $img->store('products', 'public');
+                $product->extraImages()->create([
+                    'path' => $path,
+                    'sort_order' => $index,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
 
+    // GET single product for frontend customize page
+    public function show(Product $product)
+    {
+        // Load both image tables
+        $product->load(['images', 'extraImages']);
+
+        // Convert main images → URLs
+        $mainImages = $product->images->map(function ($img) {
+            return asset('storage/' . $img->path);
+        });
+
+        // Convert custom images → URLs
+        $customImages = $product->extraImages->map(function ($img) {
+            return asset('storage/' . $img->path);
+        });
+
+        return response()->json([
+            'id' => $product->id,
+            'productName' => $product->name,
+            'extraDescription' => $product->extra_description,
+            'price' => $product->price,
+            'discountedPrice' => $product->discounted_price,
+            'productCode' => $product->product_code,
+
+            // Main gallery images
+            'images' => $mainImages,
+
+            // Customize page images
+            'customizeImages' => $customImages,
+        ]);
+    }
 
     public function destroy(Product $product)
     {
+        // Delete product images
         foreach ($product->images as $img) {
             \Storage::disk('public')->delete($img->path);
             $img->delete();
         }
+
         $product->delete();
+
         return back()->with('success', 'Product deleted.');
     }
 }

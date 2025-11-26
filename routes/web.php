@@ -4,8 +4,6 @@ use Illuminate\Support\Facades\Route;
 
 // ✅ Import all controllers
 use App\Http\Controllers\Admin\TeamMemberController;
-use App\Http\Controllers\Admin\PlaceOrderItemController;
-use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\HeroSliderController;
 use App\Http\Controllers\Admin\FactoryController;
 use App\Http\Controllers\Admin\SustainabilityController;
