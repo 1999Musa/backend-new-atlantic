@@ -20,8 +20,11 @@ use App\Http\Controllers\Admin\CommunitySectionController;
 use App\Http\Controllers\Admin\ContactHeroController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
-
+use App\Http\Controllers\Admin\CustomRequestAdminController;
 use App\Http\Controllers\UserAdminController;
+use App\Http\Controllers\Admin\SwatchRequestAdminController;
+
+
 
 Route::get('/admin/users', [UserAdminController::class, 'index']);
 
@@ -39,6 +42,20 @@ Route::middleware(['auth'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+
+        Route::resource('custom-requests', CustomRequestAdminController::class)
+            ->only(['index', 'show', 'destroy'])
+            ->middleware('auth');
+
+        Route::post('custom-requests/{id}/status', [CustomRequestAdminController::class, 'updateStatus'])
+            ->name('custom-requests.update-status')
+            ->middleware('auth');
+
+        Route::post('custom-requests/bulk-delete', [CustomRequestAdminController::class, 'bulkDelete'])
+            ->name('custom-requests.bulk-delete');
+
+            Route::get('swatch-requests', [SwatchRequestAdminController::class, 'index'])->name('swatch.index');
+    Route::patch('swatch-requests/{swatch}/status', [SwatchRequestAdminController::class, 'updateStatus'])->name('swatch.status');
 
         Route::get('/users', [UserAdminController::class, 'index'])
             ->name('users.index');

@@ -84,7 +84,7 @@ class ProductController extends Controller
     }
 
 
-    public function update(Request $request, Product $product)
+public function update(Request $request, Product $product)
     {
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
@@ -102,9 +102,32 @@ class ProductController extends Controller
 
         $product->update($validated);
 
+        // 1. HANDLE MAIN IMAGES (REPLACE LOGIC)
+        if ($request->hasFile('images')) {
+            
+            // 
+            
+            // A. Delete ALL existing main images from Storage & DB
+            foreach ($product->images as $img) {
+                // Delete physical file
+                if (\Storage::disk('public')->exists($img->path)) {
+                    \Storage::disk('public')->delete($img->path);
+                }
+                // Delete DB record
+                $img->delete();
+            }
 
-        // DELETE REMOVED MAIN IMAGES
-        if ($request->filled('remove_main')) {
+            // B. Upload New Images
+            foreach ($request->file('images') as $index => $img) {
+                $path = $img->store('products', 'public');
+                $product->images()->create([
+                    'path' => $path,
+                    'sort_order' => $index,
+                ]);
+            }
+        } 
+        // Only run the manual "remove_main" logic if we DIDN'T just wipe everything above
+        elseif ($request->filled('remove_main')) {
             $ids = explode(',', $request->remove_main);
             $images = $product->images()->whereIn('id', $ids)->get();
             foreach ($images as $img) {
@@ -114,7 +137,11 @@ class ProductController extends Controller
         }
 
 
-        // DELETE REMOVED EXTRA IMAGES
+        // 2. HANDLE EXTRA IMAGES (Keep existing logic or apply replace logic here too?)
+        // Assuming you want to keep Append/Delete logic for Extra, 
+        // but if you want to replace extra images too, copy the logic from above.
+        
+        // Delete specific removed extra images
         if ($request->filled('remove_extra')) {
             $ids = explode(',', $request->remove_extra);
             $images = $product->extraImages()->whereIn('id', $ids)->get();
@@ -123,22 +150,8 @@ class ProductController extends Controller
                 $img->delete();
             }
         }
-        // -------------------------------
-        // SAVE NEW MAIN IMAGES
-        // -------------------------------
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $index => $img) {
-                $path = $img->store('products', 'public');
-                $product->images()->create([
-                    'path' => $path,
-                    'sort_order' => $index,
-                ]);
-            }
-        }
 
-        // -------------------------------
-        // SAVE NEW EXTRA IMAGES
-        // -------------------------------
+        // Add new extra images (This appends. Change to replace if needed)
         if ($request->hasFile('extra_images')) {
             foreach ($request->file('extra_images') as $index => $img) {
                 $path = $img->store('products', 'public');

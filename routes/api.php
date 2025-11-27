@@ -21,6 +21,11 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\UserLoginController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Api\CustomRequestController;
+use App\Http\Controllers\Api\SwatchRequestController;
+
+
+
 
 
 
@@ -42,6 +47,9 @@ Route::post('/login', [UserLoginController::class, 'login']);
 Route::get('/users', [UserLoginController::class, 'index']);
 
 
+Route::post('/custom-request', [CustomRequestController::class, 'store']);
+
+Route::post('/swatch-request', [SwatchRequestController::class, 'store']);
 
 Route::post('/contact', [ContactController::class, 'sendMail']);
 

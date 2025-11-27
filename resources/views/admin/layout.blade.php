@@ -1,9 +1,9 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
+    <script src="https://cdn.ckeditor.com/ckeditor5/40.0.0/classic/ckeditor.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - @yield('title', 'Dashboard')</title>
@@ -15,20 +15,22 @@
         body {
             font-family: 'Inter', sans-serif;
         }
+
         .active-link {
             background-color: #10b981;
             color: white !important;
         }
+
         .active-group {
-            background-color: #a8e910 !important; /* Tailwind yellow-300 */
+            background-color: #a8e910 !important;
+            /* Tailwind yellow-300 */
         }
     </style>
 </head>
 
 <body class="min-h-screen bg-[#F4F7F6] text-gray-800 p-4 lg:p-8">
 
-    <div class="flex h-full max-h-[95vh]" 
-        x-data="{ open: localStorage.getItem('openGroup') || '' }" 
+    <div class="flex h-full max-h-[95vh]" x-data="{ open: localStorage.getItem('openGroup') || '' }"
         x-init="$watch('open', val => localStorage.setItem('openGroup', val))">
 
         <!-- Sidebar -->
@@ -57,8 +59,7 @@
 
                 {{-- LANDING PAGE --}}
                 <div>
-                    <button 
-                        :class="open === 'landing' ? 'active-group' : ''"
+                    <button :class="open === 'landing' ? 'active-group' : ''"
                         @click="open = (open === 'landing' ? '' : 'landing')"
                         class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
                         <span>Landing Page</span>
@@ -78,38 +79,28 @@
                     </div>
                 </div>
 
-<div>
-    <button 
-        :class="open === 'users' ? 'active-group' : ''"
-        @click="open = (open === 'users' ? '' : 'users')"
-        class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
-        <span>Users</span>
-        <svg 
-            :class="open === 'users' ? 'rotate-180' : ''" 
-            class="w-4 h-4 transition-transform"
-            xmlns="http://www.w3.org/2000/svg" 
-            fill="none" 
-            viewBox="0 0 24 24" 
-            stroke="currentColor"
-            stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-        </svg>
-    </button>
+                <div>
+                    <button :class="open === 'users' ? 'active-group' : ''"
+                        @click="open = (open === 'users' ? '' : 'users')"
+                        class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        <span>Users</span>
+                        <svg :class="open === 'users' ? 'rotate-180' : ''" class="w-4 h-4 transition-transform"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
 
-    <div x-show="open === 'users'" x-collapse class="ml-4 mt-1 space-y-1">
-        <x-admin-link 
-            route="admin.users.index" 
-            label="All Users" 
-            class="ajax-link" 
-        />
-        
-    </div>
-</div>
+                    <div x-show="open === 'users'" x-collapse class="ml-4 mt-1 space-y-1">
+                        <x-admin-link route="admin.users.index" label="All Users" class="ajax-link" />
+
+                    </div>
+                    
+                </div>
 
                 {{-- ABOUT US --}}
                 <div>
-                    <button 
-                        :class="open === 'about' ? 'active-group' : ''"
+                    <button :class="open === 'about' ? 'active-group' : ''"
                         @click="open = (open === 'about' ? '' : 'about')"
                         class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
                         <span>About Us</span>
@@ -126,10 +117,28 @@
                     </div>
                 </div>
 
+                <div>
+                    <button :class="open === 'request' ? 'active-group' : ''"
+                        @click="open = (open === 'request' ? '' : 'request')"
+                        class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        <span>Request</span>
+                        <svg :class="open === 'request' ? 'rotate-180' : ''" class="w-4 h-4 transition-transform"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="open === 'request'" x-collapse class="ml-4 mt-1 space-y-1">
+                        <x-admin-link route="admin.custom-requests.index" label=" Customization Requests" class="ajax-link" />
+                    </div>
+                    <div x-show="open === 'request'" x-collapse class="ml-4 mt-1 space-y-1">
+                        <x-admin-link route="admin.swatch.index" label=" Swatch Requests" class="ajax-link" />
+                    </div>
+                </div>
+
                 {{-- PRODUCTS --}}
                 <div>
-                    <button 
-                        :class="open === 'products' ? 'active-group' : ''"
+                    <button :class="open === 'products' ? 'active-group' : ''"
                         @click="open = (open === 'products' ? '' : 'products')"
                         class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
                         <span>Products</span>
@@ -147,8 +156,7 @@
 
                 {{-- WHY CHOOSE ARBELLA --}}
                 <div>
-                    <button 
-                        :class="open === 'choose' ? 'active-group' : ''"
+                    <button :class="open === 'choose' ? 'active-group' : ''"
                         @click="open = (open === 'choose' ? '' : 'choose')"
                         class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
                         <span>Why Choose Arbella</span>
@@ -165,8 +173,7 @@
 
                 {{-- OUR FACTORY --}}
                 <div>
-                    <button 
-                        :class="open === 'factory' ? 'active-group' : ''"
+                    <button :class="open === 'factory' ? 'active-group' : ''"
                         @click="open = (open === 'factory' ? '' : 'factory')"
                         class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
                         <span>Our Factory</span>
@@ -184,8 +191,7 @@
 
                 {{-- SUSTAINABILITY --}}
                 <div>
-                    <button 
-                        :class="open === 'sustain' ? 'active-group' : ''"
+                    <button :class="open === 'sustain' ? 'active-group' : ''"
                         @click="open = (open === 'sustain' ? '' : 'sustain')"
                         class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
                         <span>Sustainability</span>
@@ -202,8 +208,7 @@
 
                 {{-- COMMUNITY --}}
                 <div>
-                    <button 
-                        :class="open === 'community' ? 'active-group' : ''"
+                    <button :class="open === 'community' ? 'active-group' : ''"
                         @click="open = (open === 'community' ? '' : 'community')"
                         class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
                         <span>Community</span>
@@ -220,8 +225,7 @@
 
                 {{-- CONTACT US --}}
                 <div>
-                    <button 
-                        :class="open === 'contact' ? 'active-group' : ''"
+                    <button :class="open === 'contact' ? 'active-group' : ''"
                         @click="open = (open === 'contact' ? '' : 'contact')"
                         class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
                         <span>Contact Us</span>
@@ -316,4 +320,5 @@
     </script>
 
 </body>
+
 </html>

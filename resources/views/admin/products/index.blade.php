@@ -4,13 +4,11 @@
 
 @section('content')
 
-    <!-- Header -->
     <div class="flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-gray-800">
             Products
         </h1>
         <div class="flex items-center gap-4">
-            <!-- Go to Categories Button -->
             <a href="{{ route('admin.categories.index') }}"
                 class="flex items-center gap-2 text-sm font-medium text-gray-600 hover:text-emerald-600 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
@@ -21,7 +19,6 @@
                 Go to Categories
             </a>
 
-            <!-- Add New Product Button -->
             <a href="{{ route('admin.products.create') }}"
                 class="flex items-center gap-2 py-2 px-4 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
@@ -33,20 +30,17 @@
         </div>
     </div>
 
-    <!-- Session Message -->
     @if (session('success'))
         <div class="mb-6 p-4 bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg shadow-sm" role="alert">
             {{ session('success') }}
         </div>
     @endif
 
-    <!-- Product Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($products as $product)
             <div
                 class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg">
 
-                <!-- Image Section -->
                 <div class="w-full  bg-gray-50 border-b border-gray-200">
                     @if($product->images->first())
                         <img src="{{ Storage::url($product->images->first()->path) }}" alt="{{ $product->name }}"
@@ -60,9 +54,8 @@
                             </svg>
                         </div>
                     @endif
-
-
                 </div>
+
                 @if($product->extraImages && $product->extraImages->isNotEmpty())
                     <div class="flex items-center gap-2 p-2">
                         @foreach($product->extraImages as $img)
@@ -71,33 +64,31 @@
                         @endforeach
                     </div>
                 @endif
-                <!-- Content Section -->
+
                 <div class="p-2 flex-1 flex flex-col">
                     <h3 class="text-lg font-bold text-gray-800 mb-1">{{ $product->name }}</h3>
                     <p class="text-sm text-emerald-600 font-medium mb-3">
                         {{ $product->category?->title ?? 'Uncategorized' }}
                     </p>
 
-                    <!-- Product Info -->
                     <div class="text-sm text-gray-700 space-y-1 mb-2 flex-1">
-                        <p><span class="font-semibold text-gray-900">Product Code:</span> {{ $product->product_code ?? '—' }}
-                        </p>
+                        <p><span class="font-semibold text-gray-900">Product Code:</span> {{ $product->product_code ?? '—' }}</p>
                         <p><span class="font-semibold text-gray-900">MOQ:</span> {{ $product->moq ?? '—' }}</p>
                         <p><span class="font-semibold text-gray-900">FOB:</span> {{ $product->fob ?? '—' }}</p>
-                        <p><span class="font-semibold text-gray-900">Price:</span> ${{ number_format($product->price ?? 0, 2) }}
-                        </p>
-                        <p><span class="font-semibold text-gray-900">Discounted Price:</span>
-                            ${{ number_format($product->discounted_price ?? 0, 2) }}</p>
+                        <p><span class="font-semibold text-gray-900">Price:</span> ${{ number_format($product->price ?? 0, 2) }}</p>
+                        <p><span class="font-semibold text-gray-900">Discounted Price:</span> ${{ number_format($product->discounted_price ?? 0, 2) }}</p>
+
                         @if($product->extra_description)
-                            <p><span class="font-semibold text-gray-900">Extra Description:</span> {{ $product->extra_description }}
+                            <p class="mt-2 text-xs text-gray-500">
+                                <span class="font-semibold text-gray-900 block">Extra Description:</span>
+                                {{-- strip_tags removes the HTML, Str::limit cuts it off if it's too long --}}
+                                {{ Str::limit(strip_tags($product->extra_description), 100) }}
                             </p>
                         @endif
                     </div>
 
-                    <!-- Actions Section -->
                     <div class="pt-0 border-t border-gray-100 flex items-center justify-between">
                         <div class="flex items-center gap-2">
-                            <!-- Edit Button -->
                             <a href="{{ route('admin.products.edit', $product) }}"
                                 class="flex items-center gap-1 py-1 px-3 bg-yellow-500 text-white rounded-lg text-xs font-medium hover:bg-yellow-600 transition-colors shadow-sm">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
@@ -108,7 +99,6 @@
                                 Edit
                             </a>
 
-                            <!-- Delete Button -->
                             <form action="{{ route('admin.products.destroy', $product) }}" method="POST"
                                 onsubmit="return confirm('Are you sure you want to delete this product?');">
                                 @csrf
@@ -130,7 +120,6 @@
         @endforeach
     </div>
 
-    <!-- Pagination -->
     <div class="mt-8">
         {{ $products->links() }}
     </div>
