@@ -10,27 +10,31 @@ use Illuminate\Support\Facades\Mail;
 class SwatchRequestController extends Controller
 {
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'name'          => 'required|string',
-            'email'         => 'required|email',
-            'phone_country' => 'required|string',
-            'phone_number'  => 'required|string',
-            'address'       => 'required|string',
-            'message'       => 'required|string',
-        ]);
+{
+    $data = $request->validate([
+        'product_id'    => 'required|exists:products,id', // Validate product exists
+        'name'          => 'required|string',
+        'email'         => 'required|email',
+        'phone_country' => 'required|string',
+        'phone_number'  => 'required|string',
+        'address'       => 'required|string',
+        'message'       => 'required|string',
+    ]);
 
-        $swatch = SwatchRequest::create($data);
+    $swatch = SwatchRequest::create($data);
 
-        // Send Email
-        Mail::send('emails.swatch-request', ['swatch' => $swatch], function ($m) use ($swatch) {
-            $m->to('devmusa@arbellafashion.com', 'Admin')
-              ->subject('New Fabric Swatch Request');
-        });
+    // Load product relationship so it's available in the email view
+    $swatch->load('product');
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Swatch request sent successfully!',
-        ]);
-    }
+    // Send Email
+    Mail::send('emails.swatch-request', ['swatch' => $swatch], function ($m) use ($swatch) {
+        $m->to('devmusa@arbellafashion.com', 'Admin')
+          ->subject('New Fabric Swatch Request - ' . ($swatch->product->product_code ?? 'N/A'));
+    });
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Swatch request sent successfully!',
+    ]);
+}
 }

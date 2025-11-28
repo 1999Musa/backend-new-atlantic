@@ -263,8 +263,7 @@
             <div id="mainContent" class="bg-white h-full rounded-2xl shadow-lg p-6 lg:p-10 overflow-y-auto">
                 <div class="mb-8 flex items-center justify-between">
                     <div>
-                        <h2 class="text-3xl font-bold text-gray-800">@yield('title')</h2>
-                        <p class="text-sm text-gray-500 mt-1">Manage your world, beautifully</p>
+                        <p class="text-m text-gray-700 mt-1">Manage Your Company, Beautifully</p>
                     </div>
                     <a href="{{ url('/') }}" target="_blank"
                         class="flex items-center gap-2 bg-emerald-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-600 shadow-md transition-all">

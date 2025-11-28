@@ -54,8 +54,18 @@ Route::middleware(['auth'])
         Route::post('custom-requests/bulk-delete', [CustomRequestAdminController::class, 'bulkDelete'])
             ->name('custom-requests.bulk-delete');
 
-            Route::get('swatch-requests', [SwatchRequestAdminController::class, 'index'])->name('swatch.index');
-    Route::patch('swatch-requests/{swatch}/status', [SwatchRequestAdminController::class, 'updateStatus'])->name('swatch.status');
+        Route::delete('swatch-requests/{id}', [SwatchRequestAdminController::class, 'destroy'])
+            ->name('swatch.destroy');
+            
+        Route::get('swatch-requests', [SwatchRequestAdminController::class, 'index'])->name('swatch.index');
+        Route::patch('swatch-requests/{swatch}/status', [SwatchRequestAdminController::class, 'updateStatus'])->name('swatch.status');
+        Route::post('swatch-requests/bulk-delete', [SwatchRequestAdminController::class, 'bulkDelete'])->name('swatch.bulk-delete');// Add this line to enable the delete button
+    
+        // 2. Index (List)
+        Route::get('swatch-requests', [SwatchRequestAdminController::class, 'index'])->name('swatch.index');
+
+        // 3. Show (Single Detail Page) - THIS WAS MISSING
+        Route::get('swatch-requests/{id}', [SwatchRequestAdminController::class, 'show'])->name('swatch.show');
 
         Route::get('/users', [UserAdminController::class, 'index'])
             ->name('users.index');

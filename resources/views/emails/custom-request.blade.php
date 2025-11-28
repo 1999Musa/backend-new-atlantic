@@ -1,6 +1,8 @@
 <h2>New Product Customization Request</h2>
 
 <p><strong>Name:</strong> {{ $custom->name }}</p>
+<p><strong>Product Name:</strong> {{ $custom->product->name }}</p>
+<p><strong>Product Code:</strong> {{ $custom->product->product_code }}</p>
 <p><strong>Email:</strong> {{ $custom->email }}</p>
 <p><strong>Phone:</strong> {{ $custom->phone_country }} {{ $custom->phone_number }}</p>
 <p><strong>Quantity:</strong> {{ $custom->quantity }}</p>
