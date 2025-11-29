@@ -110,7 +110,7 @@
                                 </td>
 
                                 {{-- Actions Cell --}}
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                {{-- <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <button
                                         class="text-gray-400 hover:text-indigo-600 transition-colors p-2 rounded-full hover:bg-indigo-50">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -118,7 +118,7 @@
                                                 d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
                                         </svg>
                                     </button>
-                                </td>
+                                </td> --}}
                             </tr>
                         @endforeach
                     </tbody>

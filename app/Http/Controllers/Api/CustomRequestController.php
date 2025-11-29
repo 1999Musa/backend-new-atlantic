@@ -5,11 +5,46 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\CustomRequest;
 use Illuminate\Http\Request;
+use App\Models\UserLogin;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class CustomRequestController extends Controller
 {
+
+
+public function index(Request $request)
+{
+    $user = $request->auth_user;
+
+    if (!$user) {
+        return response()->json(["success" => false, "message" => "Unauthorized"], 401);
+    }
+
+    $requests = CustomRequest::with('product')
+        ->where('email', $user->email)
+        ->orderBy('created_at', 'desc')
+        ->get()
+        ->map(function ($req) {
+            return [
+                'id' => $req->id,
+                'product_code' => $req->product->product_code ?? 'N/A',
+                'product_name' => $req->product->name ?? 'N/A',
+                'created_at' => $req->created_at,
+                'status' => $req->status,
+                'quantity' => $req->quantity ?? 1, // optional
+            ];
+        });
+
+    return response()->json([
+        "success" => true,
+        "data" => $requests
+    ]);
+}
+
+
+
+
     public function store(Request $request)
     {
         $data = $request->validate([

@@ -17,13 +17,12 @@
         }
 
         .active-link {
-            background-color: #10b981;
-            color: white !important;
+            background-color: #1d4b6685  !important;
+            color: black !important;
         }
 
         .active-group {
-            background-color: #a8e910 !important;
-            /* Tailwind yellow-300 */
+            background-color: #1e06a348 !important;
         }
     </style>
 </head>
@@ -37,7 +36,7 @@
         <aside class="w-72 bg-white rounded-2xl shadow-lg flex flex-col p-6">
             <div class="p-2 border-b border-gray-200">
                 <div class="flex items-center gap-3">
-                    <div class="bg-emerald-500 p-2 rounded-lg">
+                    <div class=" p-2 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -48,7 +47,7 @@
                     </div>
                     <div>
                         <a href="{{ route('dashboard') }}">
-                            <h1 class="text-xl font-bold text-gray-800">Arbella Admin</h1>
+                            <h1 class="text-xl font-bold text-gray-800">Atlantic Admin</h1>
                         </a>
                         <p class="text-xs text-gray-500">Manage your world, beautifully</p>
                     </div>
@@ -57,6 +56,46 @@
 
             <nav x-data class="flex-1 overflow-y-auto mt-6 px-2 space-y-2">
 
+                {{-- USERS --}}
+                <div>
+                    <button :class="open === 'users' ? 'active-group' : ''"
+                        @click="open = (open === 'users' ? '' : 'users')"
+                        class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                        <span>Users</span>
+                        <svg :class="open === 'users' ? 'rotate-180' : ''" class="w-4 h-4 transition-transform"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div x-show="open === 'users'" x-collapse class="ml-4 mt-1 space-y-1">
+                        <x-admin-link route="admin.users.index" label="All Users" class="ajax-link" />
+                    </div>
+
+
+                    {{-- REQUESTS --}}
+                    <div>
+                        <button :class="open === 'request' ? 'active-group' : ''"
+                            @click="open = (open === 'request' ? '' : 'request')"
+                            class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
+                            <span>Request</span>
+                            <svg :class="open === 'request' ? 'rotate-180' : ''" class="w-4 h-4 transition-transform"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        <div x-show="open === 'request'" x-collapse class="ml-4 mt-1 space-y-1">
+                            <x-admin-link route="admin.custom-requests.index" label=" Customization Requests"
+                                class="ajax-link" />
+                        </div>
+                        <div x-show="open === 'request'" x-collapse class="ml-4 mt-1 space-y-1">
+                            <x-admin-link route="admin.swatch.index" label=" Swatch Requests" class="ajax-link" />
+                        </div>
+                    </div>
+
+                </div>
                 {{-- LANDING PAGE --}}
                 <div>
                     <button :class="open === 'landing' ? 'active-group' : ''"
@@ -79,24 +118,7 @@
                     </div>
                 </div>
 
-                <div>
-                    <button :class="open === 'users' ? 'active-group' : ''"
-                        @click="open = (open === 'users' ? '' : 'users')"
-                        class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                        <span>Users</span>
-                        <svg :class="open === 'users' ? 'rotate-180' : ''" class="w-4 h-4 transition-transform"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
 
-                    <div x-show="open === 'users'" x-collapse class="ml-4 mt-1 space-y-1">
-                        <x-admin-link route="admin.users.index" label="All Users" class="ajax-link" />
-
-                    </div>
-                    
-                </div>
 
                 {{-- ABOUT US --}}
                 <div>
@@ -117,24 +139,7 @@
                     </div>
                 </div>
 
-                <div>
-                    <button :class="open === 'request' ? 'active-group' : ''"
-                        @click="open = (open === 'request' ? '' : 'request')"
-                        class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                        <span>Request</span>
-                        <svg :class="open === 'request' ? 'rotate-180' : ''" class="w-4 h-4 transition-transform"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div x-show="open === 'request'" x-collapse class="ml-4 mt-1 space-y-1">
-                        <x-admin-link route="admin.custom-requests.index" label=" Customization Requests" class="ajax-link" />
-                    </div>
-                    <div x-show="open === 'request'" x-collapse class="ml-4 mt-1 space-y-1">
-                        <x-admin-link route="admin.swatch.index" label=" Swatch Requests" class="ajax-link" />
-                    </div>
-                </div>
+
 
                 {{-- PRODUCTS --}}
                 <div>
@@ -154,12 +159,12 @@
                     </div>
                 </div>
 
-                {{-- WHY CHOOSE ARBELLA --}}
+                {{-- WHY CHOOSE Atlantic --}}
                 <div>
                     <button :class="open === 'choose' ? 'active-group' : ''"
                         @click="open = (open === 'choose' ? '' : 'choose')"
                         class="flex justify-between items-center w-full px-4 py-3 text-sm font-semibold rounded-lg text-gray-700 hover:bg-gray-100 transition">
-                        <span>Why Choose Arbella</span>
+                        <span>Why Choose Atlantic</span>
                         <svg :class="open === 'choose' ? 'rotate-180' : ''" class="w-4 h-4 transition-transform"
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="2">
@@ -254,7 +259,6 @@
                         <span>Logout</span>
                     </button>
                 </form>
-            </div>
         </aside>
 
 
