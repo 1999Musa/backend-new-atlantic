@@ -10,23 +10,22 @@ class ApiToken
 {
     public function handle(Request $request, Closure $next)
     {
-        $token = $request->header("Authorization");
+        $token = $request->header('Authorization');
 
         if (!$token) {
-            return response()->json(["error" => "Missing token"], 401);
+            return response()->json(['error' => 'Missing token'], 401);
         }
 
-        $token = str_replace("Bearer ", "", $token);
+        $token = str_replace('Bearer ', '', $token);
 
-        // Find user by token
-        $user = UserLogin::where("api_token", $token)->first();
+        $user = UserLogin::where('api_token', $token)->first();
 
         if (!$user) {
-            return response()->json(["error" => "Invalid token"], 401);
+            return response()->json(['error' => 'Invalid token'], 401);
         }
 
-        // attach user to request
-        $request->merge(["auth_user" => $user]);
+        // Attach the authenticated user
+        $request->setUserResolver(fn() => $user);
 
         return $next($request);
     }

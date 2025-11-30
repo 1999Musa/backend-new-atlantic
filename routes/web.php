@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CustomRequestAdminController;
 use App\Http\Controllers\UserAdminController;
 use App\Http\Controllers\Admin\SwatchRequestAdminController;
+use App\Http\Controllers\Admin\OrderHeroController;
 
 
 
@@ -69,6 +70,9 @@ Route::middleware(['auth'])
 
         Route::get('/users', [UserAdminController::class, 'index'])
             ->name('users.index');
+
+        Route::resource('orderhero', OrderHeroController::class);
+        
         // Product & Category Management
         Route::resource('categories', AdminCategoryController::class);
         Route::resource('products', AdminProductController::class);

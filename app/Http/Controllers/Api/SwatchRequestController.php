@@ -55,7 +55,7 @@ class SwatchRequestController extends Controller
     // 🟦 USER REQUEST FETCHER (for dashboard)
 public function userRequests(Request $request)
 {
-    $user = $request->auth_user; // get user from middleware
+    $user = $request->user(); // middleware attaches this
 
     if (!$user) {
         return response()->json(["success" => false, "message" => "Unauthorized"], 401);
@@ -65,20 +65,20 @@ public function userRequests(Request $request)
         ->where('email', $user->email)
         ->orderBy('created_at', 'desc')
         ->get()
-        ->map(function ($req) {
-            return [
-                'id' => $req->id,
-                'product_code' => $req->product->product_code ?? 'N/A',
-                'product_name' => $req->product->name ?? 'N/A',
-                'created_at' => $req->created_at,
-                'status' => $req->status,
-            ];
-        });
+        ->map(fn($req) => [
+            'id' => $req->id,
+            'product_code' => $req->product->product_code ?? 'N/A',
+            'product_name' => $req->product->name ?? 'N/A',
+            'created_at' => $req->created_at->toDateTimeString(),
+            'status' => $req->status,
+        ]);
 
     return response()->json([
         "success" => true,
         "data" => $requests
     ]);
 }
+
+
 
 }

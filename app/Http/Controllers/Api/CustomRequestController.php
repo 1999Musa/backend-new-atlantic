@@ -9,13 +9,15 @@ use App\Models\UserLogin;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
+
 class CustomRequestController extends Controller
 {
 
 
 public function index(Request $request)
 {
-    $user = $request->auth_user;
+   $user = $request->user();
+
 
     if (!$user) {
         return response()->json(["success" => false, "message" => "Unauthorized"], 401);
