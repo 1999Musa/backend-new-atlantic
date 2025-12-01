@@ -116,7 +116,6 @@
                         <x-admin-link route="admin.product-sliders.index" label="Product Sliders" class="ajax-link" />
                         <x-admin-link route="admin.front-factory.index" label="Front Factory" class="ajax-link" />
                         <x-admin-link route="admin.certified-logos.index" label="Certified Logos" class="ajax-link" />
-                        <x-admin-link route="admin.short-story.index" label="Short Story Video" class="ajax-link" />
                     </div>
                 </div>
 
@@ -135,7 +134,8 @@
                         </svg>
                     </button>
                     <div x-show="open === 'about'" x-collapse class="ml-4 mt-1 space-y-1">
-                        <x-admin-link route="admin.about-hero.index" label="About Hero" class="ajax-link" />
+                        {{-- <x-admin-link route="admin.about-hero.index" label="About Hero" class="ajax-link" /> --}}
+                        <x-admin-link route="admin.short-story.index" label="Hero Story Video" class="ajax-link" />
                         <x-admin-link route="admin.team-members.index" label="Team Members" class="ajax-link" />
                         <x-admin-link route="admin.clients.index" label="Clients" class="ajax-link" />
                     </div>
