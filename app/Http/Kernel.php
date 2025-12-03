@@ -32,7 +32,8 @@ class Kernel extends HttpKernel
     ];
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
-        'apitoken' => \App\Http\Middleware\ApiToken::class,
+        'ApiToken' => \App\Http\Middleware\ApiToken::class,
+        'auth.token' => \App\Http\Middleware\TokenAuthMiddleware::class,
     ];
 }
 

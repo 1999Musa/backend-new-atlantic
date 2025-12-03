@@ -6,12 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class SwatchRequest extends Model
 {
-    protected $fillable = [
-        'product_id',
-        'name', 'email', 'phone_country',
-        'phone_number', 'address', 'message',
-        'status'
-    ];
+protected $fillable = [
+    'product_id',
+    'product_code',
+    'product_name',
+    'name',
+    'email',
+    'phone_country',
+    'phone_number',
+    'address',
+    'message',
+    'status'
+];
+
 
     public function product()
     {

@@ -7,17 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class CustomRequest extends Model
 {
-    protected $fillable = [
-        'product_id',
-        'name',
-        'email',
-        'phone_country',
-        'phone_number',
-        'quantity',
-        'message',
-        'attachment',
-        'status'
-    ];
+protected $fillable = [
+    'product_id',
+    'product_code',
+    'product_name',
+    'name',
+    'email',
+    'phone_country',
+    'phone_number',
+    'quantity',
+    'message',
+    'attachment',
+    'status'
+];
+
 
     public function product()
     {

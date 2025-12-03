@@ -28,12 +28,15 @@ use App\Http\Controllers\Api\OrderHeroController;
 
 
 
-Route::middleware('apitoken')->group(function () {
+Route::middleware([\App\Http\Middleware\ApiToken::class])->group(function () {
     Route::get('/user', [UserProfileController::class, 'show']);
     Route::put('/user/update', [UserProfileController::class, 'updateProfile']);
     Route::put('/user/change-password', [UserProfileController::class, 'changePassword']);
-        Route::get('/user/swatch-requests', [SwatchRequestController::class, 'userRequests']);
-    Route::get('/user/custom-requests', [CustomRequestController::class, 'index']);
+        Route::get('/user/swatch-requests', 
+        [SwatchRequestController::class, 'userRequests']);
+
+    Route::get('/user/custom-requests', 
+        [CustomRequestController::class, 'userRequests']);
 });
 
 

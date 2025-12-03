@@ -22,27 +22,31 @@ class SwatchRequestController extends Controller
     {
         // Validate input
         $data = $request->validate([
-            'product_id'   => 'required|exists:products,id',
-            'name'         => 'required|string',
-            'email'        => 'required|email',
-            'phone_country'=> 'required|string',
+            'product_id' => 'required|exists:products,id',
+            'name' => 'required|string',
+            'email' => 'required|email',
+            'phone_country' => 'required|string',
             'phone_number' => 'required|string',
-            'address'      => 'required|string',
-            'message'      => 'required|string',
+            'address' => 'required|string',
+            'message' => 'required|string',
         ]);
-
+        
         $data['status'] = 'pending';
 
-        // Save to database
         $swatch = SwatchRequest::create($data);
         $swatch->load('product');
+
+        $swatch->product_code = $swatch->product->code;
+        $swatch->product_name = $swatch->product->name;
+        $swatch->save(); // 🔥 IMPORTANT
+
 
         // Send email
         \Mail::send('emails.swatch-request', [
             'swatch' => $swatch
         ], function ($m) use ($swatch) {
             $m->to('devmusa@arbellafashion.com', 'Admin')
-              ->subject('Fabric Swatch Request - ' . ($swatch->product->product_code ?? 'N/A'));
+                ->subject('Fabric Swatch Request - ' . ($swatch->product->product_code ?? 'N/A'));
         });
 
         return response()->json([
@@ -52,33 +56,19 @@ class SwatchRequestController extends Controller
         ]);
     }
 
-    // 🟦 USER REQUEST FETCHER (for dashboard)
-public function userRequests(Request $request)
-{
-    $user = $request->user(); // middleware attaches this
+    public function userRequests(Request $request)
+    {
+        $email = $request->user()->email; // logged-in user
 
-    if (!$user) {
-        return response()->json(["success" => false, "message" => "Unauthorized"], 401);
-    }
+        $data = SwatchRequest::with('product')
+            ->where('email', $email)
+            ->latest()
+            ->get();
 
-    $requests = SwatchRequest::with('product')
-        ->where('email', $user->email)
-        ->orderBy('created_at', 'desc')
-        ->get()
-        ->map(fn($req) => [
-            'id' => $req->id,
-            'product_code' => $req->product->product_code ?? 'N/A',
-            'product_name' => $req->product->name ?? 'N/A',
-            'created_at' => $req->created_at->toDateTimeString(),
-            'status' => $req->status,
+        return response()->json([
+            'success' => true,
+            'data' => $data
         ]);
-
-    return response()->json([
-        "success" => true,
-        "data" => $requests
-    ]);
-}
-
-
+    }
 
 }
