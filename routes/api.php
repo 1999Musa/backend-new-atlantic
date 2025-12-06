@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Api\CustomRequestController;
 use App\Http\Controllers\Api\SwatchRequestController;
 use App\Http\Controllers\Api\OrderHeroController;
+use App\Http\controllers\Api\BagController;
 
 
 
@@ -37,6 +38,11 @@ Route::put('/user/update', [UserProfileController::class, 'update']);
 
     Route::get('/user/custom-requests', 
         [CustomRequestController::class, 'userRequests']);
+
+            // BAG SYSTEM
+    Route::post('/user/bag/add', [BagController::class, 'add']);
+    Route::delete('/user/bag/remove/{product_id}', [BagController::class, 'remove']);
+    Route::get('/user/bag', [BagController::class, 'list']);
 });
 
 
