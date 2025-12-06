@@ -41,7 +41,7 @@ Route::put('/user/update', [UserProfileController::class, 'update']);
 
             // BAG SYSTEM
     Route::post('/user/bag/add', [BagController::class, 'add']);
-    Route::delete('/user/bag/remove/{product_id}', [BagController::class, 'remove']);
+    Route::delete('/user/bag/remove/{bag_id}', [BagController::class, 'remove']);
     Route::get('/user/bag', [BagController::class, 'list']);
 });
 

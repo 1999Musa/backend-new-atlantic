@@ -42,19 +42,20 @@ class BagController extends Controller
     }
 
     // Remove item
-    public function remove(Request $request, $product_id)
-    {
-        $user = $request->user();
+   public function remove(Request $request, $bag_id)
+{
+    $user = $request->user();
 
-        UserBag::where('user_id', $user->id)
-               ->where('product_id', $product_id)
-               ->delete();
+    UserBag::where('id', $bag_id)
+           ->where('user_id', $user->id)
+           ->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Removed from bag'
-        ]);
-    }
+    return response()->json([
+        'success' => true,
+        'message' => 'Removed from bag'
+    ]);
+}
+
 
     // List items in bag
     public function list(Request $request)
