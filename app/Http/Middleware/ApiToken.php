@@ -22,10 +22,8 @@ public function handle($request, Closure $next)
         return response()->json(['error' => 'Invalid token'], 401);
     }
 
-    // 🔥 Attach user properly
-    $request->setUserResolver(function() use ($user) {
-        return $user;
-    });
+    // Attach user to request
+    $request->setUserResolver(fn() => $user);
 
     return $next($request);
 }

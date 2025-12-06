@@ -19,7 +19,7 @@ use App\Http\Controllers\Admin\ContactHeroController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\UserLoginController;
-use App\Http\Controllers\UserProfileController;
+use App\Http\Controllers\Api\UserProfileController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Api\CustomRequestController;
 use App\Http\Controllers\Api\SwatchRequestController;
@@ -30,7 +30,7 @@ use App\Http\Controllers\Api\OrderHeroController;
 
 Route::middleware([\App\Http\Middleware\ApiToken::class])->group(function () {
     Route::get('/user', [UserProfileController::class, 'show']);
-    Route::put('/user/update', [UserProfileController::class, 'updateProfile']);
+Route::put('/user/update', [UserProfileController::class, 'update']);
     Route::put('/user/change-password', [UserProfileController::class, 'changePassword']);
         Route::get('/user/swatch-requests', 
         [SwatchRequestController::class, 'userRequests']);
