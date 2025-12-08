@@ -13,63 +13,61 @@ use Illuminate\Support\Facades\Storage;
 class CustomRequestController extends Controller
 {
 
-    public function userRequests(Request $request)
-    {
-        $email = $request->user()->email;
+public function userRequests(Request $request)
+{
+    $user = $request->user();
 
-        $data = CustomRequest::with('product')
-            ->where('email', $email)
-            ->latest()
-            ->get();
+    $data = CustomRequest::with('product')
+        ->where('user_id', $user->id)
+        ->latest()
+        ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
+    return response()->json([
+        'success' => true,
+        'data' => $data
+    ]);
+}
+
+public function store(Request $request)
+{
+    $user = $request->user();
+
+    $data = $request->validate([
+        'product_id' => 'required|integer',
+        'name' => 'required|string',
+        'email' => 'required|email',
+        'phone_country' => 'required|string',
+        'phone_number' => 'required|string',
+        'quantity' => 'required|integer',
+        'message' => 'required|string',
+        'attachment' => 'nullable|file|max:5120',
+    ]);
+
+    // Attach the logged-in user_id
+    $data['user_id'] = $user->id;
+
+    if ($request->hasFile('attachment')) {
+        $data['attachment'] = $request->file('attachment')
+            ->store('custom-requests', 'public');
     }
 
+    $custom = CustomRequest::create($data);
+    $custom->load('product');
 
-    public function store(Request $request)
-    {
-        $data = $request->validate([
-            'product_id' => 'required|integer',
-            'name' => 'required|string',
-            'email' => 'required|email',
-            'phone_country' => 'required|string',
-            'phone_number' => 'required|string',
-            'quantity' => 'required|integer',
-            'message' => 'required|string',
-            'attachment' => 'nullable|file|max:5120',
-        ]);
-        
+    $custom->product_code = $custom->product->code;
+    $custom->product_name = $custom->product->name;
+    $custom->save();
 
-        // Save file
-        if ($request->hasFile('attachment')) {
-            $data['attachment'] = $request->file('attachment')
-                ->store('custom-requests', 'public');
-        }
+    // Email
+    Mail::send('emails.custom-request', ['custom' => $custom], function ($m) use ($custom) {
+        $m->to('devmusa@arbellafashion.com')->subject('New Customization Request');
+    });
 
-        $custom = CustomRequest::create($data);
-        $custom->load('product');
-        $custom->product_code = $custom->product->code;
-        $custom->product_name = $custom->product->name;
-        $custom->save(); 
+    return response()->json([
+        'success' => true,
+        'message' => 'Customization request sent successfully',
+    ]);
+}
 
-
-        // Send Email
-        Mail::send('emails.custom-request', ['custom' => $custom], function ($m) use ($custom) {
-            $m->to('devmusa@arbellafashion.com', 'Admin')
-                ->subject('New Customization Request');
-
-            if ($custom->attachment) {
-                $m->attach(Storage::disk('public')->path($custom->attachment));
-            }
-        });
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Customization request sent successfully',
-        ]);
-    }
 }
 

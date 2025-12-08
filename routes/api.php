@@ -30,18 +30,27 @@ use App\Http\controllers\Api\BagController;
 
 
 Route::middleware([\App\Http\Middleware\ApiToken::class])->group(function () {
+
     Route::get('/user', [UserProfileController::class, 'show']);
-Route::put('/user/update', [UserProfileController::class, 'update']);
+
+    Route::put('/user/update', [UserProfileController::class, 'update']);
+
     Route::put('/user/change-password', [UserProfileController::class, 'changePassword']);
-        Route::get('/user/swatch-requests', 
-        [SwatchRequestController::class, 'userRequests']);
 
-    Route::get('/user/custom-requests', 
-        [CustomRequestController::class, 'userRequests']);
+    Route::post('/swatch-request', [SwatchRequestController::class, 'store']);
 
-            // BAG SYSTEM
+    Route::post('/custom-request', [CustomRequestController::class, 'store']);
+
+
+    Route::get('/user/swatch-requests', [SwatchRequestController::class, 'userRequests']);
+
+    Route::get('/user/custom-requests', [CustomRequestController::class, 'userRequests']);
+
+    // BAG, Cart SYSTEM
     Route::post('/user/bag/add', [BagController::class, 'add']);
+
     Route::delete('/user/bag/remove/{bag_id}', [BagController::class, 'remove']);
+
     Route::get('/user/bag', [BagController::class, 'list']);
 });
 
@@ -56,10 +65,8 @@ Route::post('/login', [UserLoginController::class, 'login']);
 // All users
 Route::get('/users', [UserLoginController::class, 'index']);
 
-Route::post('/swatch-request', [SwatchRequestController::class, 'store']);
 
 
-Route::post('/custom-request', [CustomRequestController::class, 'store']);
 
 
 Route::post('/swatch/store', [SwatchRequestController::class, 'store']);
